@@ -1,0 +1,39 @@
+{
+  "name": "netatmo-multi-relays",
+  "version": "0.0.1",
+  "description": "",
+  "main": "build/main.js",
+  "scripts": {
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js",
+    "watch": "NODE_ENV=development ./node_modules/.bin/webpack --config webpack.config.js --watch",
+    "start": "node ./build/main.js",
+    "compile:schemas": "npm run compile:schemas:oauth && npm run compile:schemas:home",
+    "compile:schemas:oauth": "./node_modules/.bin/json2ts ./src/schemas/oauth.schema.json ./src/schemas/oauth.ts",
+    "compile:schemas:home": "./node_modules/.bin/json2ts ./src/schemas/home.schema.json ./src/schemas/home.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tseho/netatmo-multi-relays.git"
+  },
+  "author": "Quentin Favrie <quentin.favrie@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tseho/netatmo-multi-relays/issues"
+  },
+  "homepage": "https://github.com/tseho/netatmo-multi-relays#readme",
+  "dependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-typescript": "^7.7.2",
+    "@types/node": "^12.12.7",
+    "@types/node-fetch": "^2.5.3",
+    "babel-loader": "^8.0.6",
+    "json-schema-to-typescript": "^7.1.0",
+    "node-fetch": "^2.6.0",
+    "query-string": "^6.8.3",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}

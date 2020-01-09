@@ -1,0 +1,20 @@
+{
+  "title": "OAuthTokens",
+  "type": "object",
+  "properties": {
+    "access_token": { "type": "string" },
+    "refresh_token": { "type": "string" },
+    "expires_in": { "type": "number" },
+    "expires_at": { "type": "number" },
+    "scope": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "access_token",
+    "refresh_token",
+    "expires_in"
+  ],
+  "additionalProperties": false
+}

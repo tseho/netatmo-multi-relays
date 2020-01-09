@@ -1,0 +1,279 @@
+{
+  "title": "Home",
+  "type": "object",
+  "definitions": {
+    "relay": {
+      "title": "Relay",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "const": "NAPlug" },
+        "name": { "type": "string" },
+        "setup_date": { "type": "number" },
+        "modules_bridged": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "setup_date",
+        "modules_bridged"
+      ]
+    },
+    "valve": {
+      "title": "Valve",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "const": "NRV" },
+        "name": { "type": "string" },
+        "setup_date": { "type": "number" },
+        "room_id": { "type": "string" },
+        "bridge": { "type": "string" }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "setup_date",
+        "room_id",
+        "bridge"
+      ]
+    },
+    "thermostat": {
+      "title": "Thermostat",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "const": "NATherm1" },
+        "name": { "type": "string" },
+        "setup_date": { "type": "number" },
+        "room_id": { "type": "string" },
+        "bridge": { "type": "string" }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "setup_date",
+        "room_id",
+        "bridge"
+      ]
+    },
+    "module": {
+      "title": "Module",
+      "oneOf": [
+        { "$ref": "#/definitions/relay" },
+        { "$ref": "#/definitions/valve" },
+        { "$ref": "#/definitions/thermostat" }
+      ]
+    },
+    "relay_status": {
+      "title": "RelayStatus",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "const": "NAPlug" }
+      },
+      "required": [
+        "id",
+        "type"
+      ]
+    },
+    "valve_status": {
+      "title": "ValveStatus",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "const": "NRV" },
+        "reachable": { "type": "boolean" }
+      },
+      "required": [
+        "id",
+        "type",
+        "reachable"
+      ]
+    },
+    "thermostat_status": {
+      "title": "ThermostatStatus",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "const": "NATherm1" },
+        "reachable": { "type": "boolean" },
+        "boiler_status": { "type": "boolean" },
+        "anticipating": { "type": "boolean" }
+      },
+      "required": [
+        "id",
+        "type",
+        "reachable",
+        "boiler_status",
+        "anticipating"
+      ]
+    },
+    "module_status": {
+      "title": "ModuleStatus",
+      "oneOf": [
+        { "$ref": "#/definitions/relay_status" },
+        { "$ref": "#/definitions/valve_status" },
+        { "$ref": "#/definitions/thermostat_status" }
+      ]
+    }
+  },
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "therm_setpoint_default_duration": { "type": "number" },
+    "therm_mode": { "type": "string" },
+    "therm_mode_endtime": { "type": "string" },
+    "status": {
+      "title": "HomeStatus",
+      "type": "object",
+      "properties": {
+        "modules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/module_status" }
+        },
+        "rooms": {
+          "type": "array",
+          "items": {
+            "title": "RoomStatus",
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "reachable": { "type": "boolean" },
+              "therm_measured_temperature": { "type": "number" },
+              "heating_power_request": { "type": "number" },
+              "therm_setpoint_temperature": { "type": "number" },
+              "therm_setpoint_mode": { "type": "string" },
+              "therm_setpoint_start_time": { "type": "number" },
+              "therm_setpoint_end_time": { "type": "number" },
+              "anticipating": { "type": "boolean" },
+              "open_window": { "type": "boolean" }
+            },
+            "required": [
+              "id",
+              "reachable",
+              "therm_measured_temperature",
+              "therm_setpoint_temperature",
+              "therm_setpoint_mode",
+              "therm_setpoint_start_time",
+              "therm_setpoint_end_time"
+            ]
+          }
+        }
+      },
+      "required": [
+        "modules",
+        "rooms"
+      ]
+    },
+    "rooms": {
+      "type": "array",
+      "items": {
+        "title": "Room",
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "module_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "module_ids"
+        ]
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/module" }
+    },
+    "schedules": {
+      "type": "array",
+      "items": {
+        "title": "Schedule",
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "default": { "type": "boolean" },
+          "selected": { "type": "boolean" },
+          "away_temp": { "type": "number" },
+          "hg_temp": { "type": "number" },
+          "timetable": {
+            "type": "array",
+            "items": {
+              "title": "TimeSlot",
+              "type": "object",
+              "properties": {
+                "zone_id": { "type": "number" },
+                "m_offset": { "type": "number" }
+              },
+              "required": [
+                "zone_id",
+                "m_offset"
+              ]
+            }
+          },
+          "zones": {
+            "type": "array",
+            "items": {
+              "title": "Zone",
+              "type": "object",
+              "properties": {
+                "id": { "type": "number" },
+                "name": { "type": "string" },
+                "type": { "type": "number" },
+                "rooms": {
+                  "type": "array",
+                  "items": {
+                    "title": "RoomTemperature",
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "therm_setpoint_temperature": { "type": "number" }
+                    },
+                    "required": [
+                      "id",
+                      "therm_setpoint_temperature"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "type",
+                "rooms"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "default",
+          "selected",
+          "away_temp",
+          "hg_temp",
+          "timetable",
+          "zones"
+        ]
+      }
+    }
+  },
+  "required": ["id", "name", "therm_mode", "therm_setpoint_default_duration", "rooms", "modules", "schedules"],
+  "additionalProperties": false
+}
