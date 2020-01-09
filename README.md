@@ -13,6 +13,7 @@ docker run --rm -t -e NMR_CLIENT_ID -e NMR_CLIENT_SECRET -e NMR_USERNAME -e NMR_
 
 #### Run directly:
 ```
+npm install
 npm run build
 npm run start
 ```
