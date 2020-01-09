@@ -25,7 +25,7 @@ const getServerErrorMessage = async (response: Response): Promise<string> => {
 
 const handleServerError = async (response: Response) => {
   if (!response.ok) {
-    throw new Error(await getServerErrorMessage(response));
+    throw Error(await getServerErrorMessage(response));
   }
 };
 

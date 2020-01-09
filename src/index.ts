@@ -9,6 +9,19 @@ import { findRoomOfModule, findStatusOfModule, findStatusOfRoom, findThermostat,
 const UPDATE_INTERVAL = (parseInt(process.env.NMR_UPDATE_INTERVAL, 10) || 600) * 1000;
 const DIFF_THRESHOLD = 0.5;
 
+const REQUIRED_ENV_VARIABLES = [
+  'NMR_CLIENT_ID',
+  'NMR_CLIENT_SECRET',
+  'NMR_USERNAME',
+  'NMR_PASSWORD',
+];
+
+for (let key of REQUIRED_ENV_VARIABLES) {
+  if (process.env[key] === undefined) {
+    throw Error('The env variable ' + key + ' is required');
+  }
+}
+
 const CLIENT_ID = process.env.NMR_CLIENT_ID;
 const CLIENT_SECRET = process.env.NMR_CLIENT_SECRET;
 const USERNAME = process.env.NMR_USERNAME;
