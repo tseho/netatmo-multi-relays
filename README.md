@@ -25,3 +25,11 @@ npm run start
 - NMR_USERNAME: Netatmo username
 - NMR_PASSWORD: Netatmo password
 - NMR_UPDATE_INTERVAL: Interval between updates, in seconds. (default: 600)
+
+
+## Build for docker
+
+```
+DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform linux/amd64,linux/arm/v7 -t tseho/netatmo-multi-relays:latest . --push
+```
+note: If `linux/arm/v7` is not available, [you can build on a raspberry pi](https://github.com/docker/buildx/issues/151).
