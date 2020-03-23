@@ -108,9 +108,18 @@ const main = async () => {
   const homes: Home[] = await getHomes(oauth.access_token);
 
   for (let home of homes) {
-    let needHeating: boolean = anotherRelayNeedsHeating(home);
-    let forcedProgramIsOn: boolean = isForcedProgramOn(home);
-    let boilerIsOn: boolean = isBoilerOn(home);
+    let needHeating: boolean;
+    let forcedProgramIsOn: boolean;
+    let boilerIsOn: boolean;
+
+    try {
+      needHeating = anotherRelayNeedsHeating(home);
+      forcedProgramIsOn = isForcedProgramOn(home);
+      boilerIsOn = isBoilerOn(home);
+    } catch (e) {
+      logger.error('Error on status check ' + e.message);
+      continue;
+    }
 
     logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
 

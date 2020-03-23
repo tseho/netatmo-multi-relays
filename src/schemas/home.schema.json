@@ -166,11 +166,7 @@
             ]
           }
         }
-      },
-      "required": [
-        "modules",
-        "rooms"
-      ]
+      }
     },
     "rooms": {
       "type": "array",

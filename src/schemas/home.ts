@@ -20,8 +20,8 @@ export interface Home {
   schedules: Schedule[];
 }
 export interface HomeStatus {
-  modules: ModuleStatus[];
-  rooms: RoomStatus[];
+  modules?: ModuleStatus[];
+  rooms?: RoomStatus[];
   [k: string]: any;
 }
 export interface RelayStatus {
