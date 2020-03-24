@@ -108,28 +108,28 @@ const main = async () => {
   const homes: Home[] = await getHomes(oauth.access_token);
 
   for (let home of homes) {
-    let needHeating: boolean;
-    let forcedProgramIsOn: boolean;
-    let boilerIsOn: boolean;
+    if (undefined === home.status.rooms || undefined === home.status.modules) {
+      logger.error('Status cannot be retrieved, check your modules connectivity.');
+      continue;
+    }
 
     try {
-      needHeating = anotherRelayNeedsHeating(home);
-      forcedProgramIsOn = isForcedProgramOn(home);
-      boilerIsOn = isBoilerOn(home);
+      let needHeating: boolean = anotherRelayNeedsHeating(home);
+      let forcedProgramIsOn: boolean = isForcedProgramOn(home);
+      let boilerIsOn: boolean = isBoilerOn(home);
+
+      logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
+
+      if (!needHeating && forcedProgramIsOn) {
+        await stopForcedProgram(home, oauth.access_token);
+        continue;
+      }
+
+      if (needHeating && !boilerIsOn) {
+        await startForcedProgram(home, oauth.access_token);
+      }
     } catch (e) {
       logger.error('Error on status check ' + e.message);
-      continue;
-    }
-
-    logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
-
-    if (!needHeating && forcedProgramIsOn) {
-      await stopForcedProgram(home, oauth.access_token);
-      continue;
-    }
-
-    if (needHeating && !boilerIsOn) {
-      await startForcedProgram(home, oauth.access_token);
     }
   }
 };
