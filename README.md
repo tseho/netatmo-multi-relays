@@ -30,6 +30,7 @@ npm run start
 ## Build for docker
 
 ```
-DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform linux/amd64,linux/arm/v7 -t tseho/netatmo-multi-relays:latest -t tseho/netatmo-multi-relays:X.X.X . --push
+DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform linux/amd64,linux/arm/v7 -t tseho/netatmo-multi-relays:latest . --push
+DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform linux/amd64,linux/arm/v7 -t tseho/netatmo-multi-relays:X.X.X . --push
 ```
 note: If `linux/arm/v7` is not available, [you can build on a raspberry pi](https://github.com/docker/buildx/issues/151).
