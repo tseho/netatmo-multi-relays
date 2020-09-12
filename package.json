@@ -29,7 +29,7 @@
     "@types/node-fetch": "^2.5.5",
     "babel-loader": "^8.1.0",
     "json-schema-to-typescript": "^7.1.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "query-string": "^6.11.1",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",
