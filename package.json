@@ -23,17 +23,17 @@
   },
   "homepage": "https://github.com/tseho/netatmo-multi-relays#readme",
   "dependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-typescript": "^7.9.0",
-    "@types/node": "^12.12.30",
-    "@types/node-fetch": "^2.5.5",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/node": "^12.12.62",
+    "@types/node-fetch": "^2.5.7",
     "babel-loader": "^8.1.0",
     "json-schema-to-typescript": "^7.1.0",
-    "node-fetch": "^2.6.0",
-    "query-string": "^6.11.1",
+    "node-fetch": "^2.6.1",
+    "query-string": "^6.13.5",
     "ts-loader": "^6.2.2",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }
