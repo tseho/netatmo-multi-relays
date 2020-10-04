@@ -25,6 +25,7 @@ npm run start
 - NMR_USERNAME: Netatmo username
 - NMR_PASSWORD: Netatmo password
 - NMR_UPDATE_INTERVAL: Interval between updates, in seconds. (default: 600)
+- NMR_DIFF_THRESHOLD: Temp difference tolerated before starting the boiler, in C°. (defaut: 0.5)
 
 
 ## Build for docker

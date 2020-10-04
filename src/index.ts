@@ -7,7 +7,7 @@ import { setRoomThermPoint } from "./api";
 import { findRoomOfModule, findStatusOfModule, findStatusOfRoom, findThermostat, intersection } from "./utils";
 
 const UPDATE_INTERVAL = (parseInt(process.env.NMR_UPDATE_INTERVAL, 10) || 600) * 1000;
-const DIFF_THRESHOLD = 0.5;
+const DIFF_THRESHOLD = parseFloat(process.env.NMR_DIFF_THRESHOLD) || 0.5;
 
 const REQUIRED_ENV_VARIABLES = [
   'NMR_CLIENT_ID',
@@ -87,7 +87,7 @@ const anotherRelayNeedsHeating = (home: Home): boolean => {
         continue;
       }
 
-      if (roomStatus.therm_measured_temperature < (roomStatus.therm_setpoint_temperature - DIFF_THRESHOLD)) {
+      if (roomStatus.therm_measured_temperature <= (roomStatus.therm_setpoint_temperature - DIFF_THRESHOLD)) {
         return true;
       }
     }
