@@ -1,5 +1,11 @@
 # netatmo-multi-relays
 
+When you have multiple Netatmo Relays in the same home, they are not talking to each other through the feature
+"COMFORT Priority mode" where additional Smart Radiator Valves can ask for heating.
+Only Smart Radiator Valves on the same Relay as the Thermostat are allowed to do this.
+This application check regularly if Smart Radiator Valves on other Relays are requesting heating and will force
+the main Thermostat to start the boiler.
+
 ## How to use
 
 Create an account and a Netatmo App on [https://dev.netatmo.com/](https://dev.netatmo.com/).
