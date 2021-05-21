@@ -104,8 +104,13 @@ const main = async () => {
     password: PASSWORD,
   };
 
-  const oauth: OAuthTokens = await getAccessTokens(credentials);
-  const homes: Home[] = await getHomes(oauth.access_token);
+  try {
+    const oauth: OAuthTokens = await getAccessTokens(credentials);
+    const homes: Home[] = await getHomes(oauth.access_token);
+  } catch (e) {
+    logger.error(e.message);
+    return;
+  }
 
   for (let home of homes) {
     if (undefined === home.status.rooms || undefined === home.status.modules) {
@@ -113,13 +118,13 @@ const main = async () => {
       continue;
     }
 
+    let needHeating: boolean = anotherRelayNeedsHeating(home);
+    let forcedProgramIsOn: boolean = isForcedProgramOn(home);
+    let boilerIsOn: boolean = isBoilerOn(home);
+
+    logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
+
     try {
-      let needHeating: boolean = anotherRelayNeedsHeating(home);
-      let forcedProgramIsOn: boolean = isForcedProgramOn(home);
-      let boilerIsOn: boolean = isBoilerOn(home);
-
-      logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
-
       if (!needHeating && forcedProgramIsOn) {
         await stopForcedProgram(home, oauth.access_token);
         continue;
@@ -127,9 +132,10 @@ const main = async () => {
 
       if (needHeating && !boilerIsOn) {
         await startForcedProgram(home, oauth.access_token);
+        continue;
       }
     } catch (e) {
-      logger.error('Error on status check ' + e.message);
+      logger.error(e.message);
     }
   }
 };
