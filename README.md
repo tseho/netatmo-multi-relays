@@ -34,10 +34,18 @@ npm run start
 - NMR_DIFF_THRESHOLD: Temp difference tolerated before starting the boiler, in C°. (defaut: 0.5)
 
 
-## Build for docker
+## Publish for docker
 
 ```
-DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform linux/amd64,linux/arm/v7 -t tseho/netatmo-multi-relays:latest . --push
-DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform linux/amd64,linux/arm/v7 -t tseho/netatmo-multi-relays:X.X.X . --push
+make publish
+RELEASE=X.X.X make publish
 ```
+
 note: If `linux/arm/v7` is not available, [you can build on a raspberry pi](https://github.com/docker/buildx/issues/151).
+
+```
+docker context create --docker "host=ssh://<user>@<ip>" raspberrypi
+docker buildx create --name builder --platform linux/arm/v7 --append raspberrypi
+docker buildx create --name builder --platform linux/amd64 --append default
+docker buildx use builder
+```
