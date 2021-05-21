@@ -5,9 +5,11 @@ import { OAuthTokens } from "./schemas/oauth";
 import { Home, Module, Relay, Room, RoomStatus, Thermostat, ThermostatStatus } from "./schemas/home";
 import { setRoomThermPoint } from "./api";
 import { findRoomOfModule, findStatusOfModule, findStatusOfRoom, findThermostat, intersection } from "./utils";
+import Clock from './clock';
 
-const UPDATE_INTERVAL = (parseInt(process.env.NMR_UPDATE_INTERVAL, 10) || 600) * 1000;
-const DIFF_THRESHOLD = parseFloat(process.env.NMR_DIFF_THRESHOLD) || 0.5;
+const UPDATE_INTERVAL_SECONDS: number = parseInt(process.env.NMR_UPDATE_INTERVAL, 10) || 600;
+const UPDATE_INTERVAL_WHEN_ACTIVE_SECONDS: number = 120;
+const DIFF_THRESHOLD_DEGREES: number = parseFloat(process.env.NMR_DIFF_THRESHOLD) || 0.5;
 
 const REQUIRED_ENV_VARIABLES = [
   'NMR_CLIENT_ID',
@@ -18,7 +20,7 @@ const REQUIRED_ENV_VARIABLES = [
 
 for (let key of REQUIRED_ENV_VARIABLES) {
   if (process.env[key] === undefined) {
-    throw Error('The env variable ' + key + ' is required');
+    logger.error('The env variable ' + key + ' is required');
   }
 }
 
@@ -87,7 +89,7 @@ const anotherRelayNeedsHeating = (home: Home): boolean => {
         continue;
       }
 
-      if (roomStatus.therm_measured_temperature <= (roomStatus.therm_setpoint_temperature - DIFF_THRESHOLD)) {
+      if (roomStatus.therm_measured_temperature <= (roomStatus.therm_setpoint_temperature - DIFF_THRESHOLD_DEGREES)) {
         return true;
       }
     }
@@ -96,7 +98,26 @@ const anotherRelayNeedsHeating = (home: Home): boolean => {
   return false;
 };
 
-const main = async () => {
+type RoomDescription = {
+  id: string;
+  name: string;
+  reachable: boolean;
+  therm_measured_temperature: number;
+  therm_setpoint_temperature: number;
+};
+const getRoomDescription = (room: Room, home: Home): RoomDescription => {
+  const roomStatus: RoomStatus = home.status.rooms.find(status => status.id === room.id);
+
+  return {
+    id: room.id,
+    name: room.name,
+    reachable: roomStatus.reachable,
+    therm_measured_temperature: roomStatus.therm_measured_temperature,
+    therm_setpoint_temperature: roomStatus.therm_setpoint_temperature,
+  };
+};
+
+const main = async (clock: Clock) => {
   const credentials: OAuthCredentials = {
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
@@ -104,27 +125,28 @@ const main = async () => {
     password: PASSWORD,
   };
 
+  let isActive: boolean = false;
+
   try {
     const oauth: OAuthTokens = await getAccessTokens(credentials);
     const homes: Home[] = await getHomes(oauth.access_token);
-  } catch (e) {
-    logger.error(e.message);
-    return;
-  }
 
-  for (let home of homes) {
-    if (undefined === home.status.rooms || undefined === home.status.modules) {
-      logger.error('Status cannot be retrieved, check your modules connectivity.');
-      continue;
-    }
+    for (let home of homes) {
+      if (undefined === home.status.rooms || undefined === home.status.modules) {
+        logger.error('Status cannot be retrieved, check your modules connectivity.');
+        continue;
+      }
 
-    let needHeating: boolean = anotherRelayNeedsHeating(home);
-    let forcedProgramIsOn: boolean = isForcedProgramOn(home);
-    let boilerIsOn: boolean = isBoilerOn(home);
+      let needHeating: boolean = anotherRelayNeedsHeating(home);
+      let forcedProgramIsOn: boolean = isForcedProgramOn(home);
+      let boilerIsOn: boolean = isBoilerOn(home);
 
-    logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
+      logger.info('rooms status', {
+        home: home.name,
+        rooms: home.rooms.map(room => getRoomDescription(room, home)),
+      });
+      logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
 
-    try {
       if (!needHeating && forcedProgramIsOn) {
         await stopForcedProgram(home, oauth.access_token);
         continue;
@@ -132,12 +154,20 @@ const main = async () => {
 
       if (needHeating && !boilerIsOn) {
         await startForcedProgram(home, oauth.access_token);
-        continue;
+        isActive = true;
       }
-    } catch (e) {
-      logger.error(e.message);
+
+      if (needHeating && forcedProgramIsOn) {
+        isActive = true;
+      }
     }
+  } catch (e) {
+    logger.error(e.message);
+  }
+
+  if (isActive) {
+    clock.setNextExecutionIn(UPDATE_INTERVAL_WHEN_ACTIVE_SECONDS);
   }
 };
 
-setImmediate(main) && setInterval(main, UPDATE_INTERVAL);
+(new Clock(main, UPDATE_INTERVAL_SECONDS, true)).start();
