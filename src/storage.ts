@@ -40,15 +40,3 @@ export const get = (
 
   return item.value;
 };
-
-export const remove = (
-  key: string,
-  namespace: string = 'default'
-): void => {
-  const filename = getFilename(key, namespace);
-  if (!fs.existsSync(filename)) {
-    return null;
-  }
-
-  fs.unlinkSync(filename);
-};

@@ -30,38 +30,6 @@ const handleServerError = async (response: Response) => {
   }
 };
 
-/**
- * @deprecated
- */
-export const requestAccessTokenUsingPassword = async (
-  {
-    client_id,
-    client_secret,
-    username,
-    password,
-  }: {
-    client_id: string,
-    client_secret: string,
-    username: string,
-    password: string,
-  }
-): Promise<OAuthTokens> => {
-  return await request(BASE_URL + '/oauth2/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    body: stringify({
-      grant_type: 'password',
-      scope: 'read_thermostat write_thermostat',
-      client_id,
-      client_secret,
-      username,
-      password,
-    })
-  });
-};
-
 export const requestAccessTokenUsingAuthorizationCode = async (
   {
     client_id,

@@ -1,10 +1,8 @@
 import { OAuthTokens } from "../schemas/oauth";
 import {
   requestAccessTokenUsingAuthorizationCode,
-  requestAccessTokenUsingPassword,
   requestAccessTokenUsingRefreshToken
 } from "../api";
-import * as Cache from "../cache";
 import * as Storage from "../storage";
 
 const CACHE_OAUTH_KEY = 'oauth';
@@ -42,7 +40,6 @@ const loadAccessTokens = async (credentials: OAuthCredentials): Promise<OAuthTok
   }
 
   throw Error('No token in the storage');
-  // return Promise.reject('No token in the storage');
 };
 
 export const requestNewAccessTokens = async (credentials: OAuthCredentials, code: string): Promise<void> => {
