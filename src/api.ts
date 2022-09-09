@@ -3,6 +3,7 @@ import { stringify } from 'query-string';
 import { OAuthTokens } from "./schemas/oauth";
 import logger from "./logger";
 
+const REDIRECT_URI: string = process.env.NMR_REDIRECT_URI || 'http://localhost:3000/callback';
 const BASE_URL = 'https://api.netatmo.com';
 
 const request = async (url: string, options: RequestInit = {}): Promise<any> => {
@@ -29,6 +30,9 @@ const handleServerError = async (response: Response) => {
   }
 };
 
+/**
+ * @deprecated
+ */
 export const requestAccessTokenUsingPassword = async (
   {
     client_id,
@@ -54,6 +58,33 @@ export const requestAccessTokenUsingPassword = async (
       client_secret,
       username,
       password,
+    })
+  });
+};
+
+export const requestAccessTokenUsingAuthorizationCode = async (
+  {
+    client_id,
+    client_secret,
+    code,
+  }: {
+    client_id: string,
+    client_secret: string,
+    code: string,
+  }
+): Promise<OAuthTokens> => {
+  return await request(BASE_URL + '/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+    body: stringify({
+      grant_type: 'authorization_code',
+      scope: 'read_thermostat write_thermostat',
+      client_id,
+      client_secret,
+      code,
+      redirect_uri: REDIRECT_URI,
     })
   });
 };

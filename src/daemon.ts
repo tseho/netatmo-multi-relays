@@ -7,15 +7,13 @@ import { setRoomThermPoint } from "./api";
 import { findRoomOfModule, findStatusOfModule, findStatusOfRoom, findThermostat, intersection } from "./utils";
 import Clock from './clock';
 
-const UPDATE_INTERVAL_SECONDS: number = parseInt(process.env.NMR_UPDATE_INTERVAL, 10) || 600;
-const UPDATE_INTERVAL_WHEN_ACTIVE_SECONDS: number = 120;
+const UPDATE_INTERVAL_SECONDS: number = parseInt(process.env.NMR_UPDATE_INTERVAL, 10) || 600; // 10min
+const UPDATE_INTERVAL_WHEN_ACTIVE_SECONDS: number = 120; // 2min
 const DIFF_THRESHOLD_DEGREES: number = parseFloat(process.env.NMR_DIFF_THRESHOLD) || 0.5;
 
 const REQUIRED_ENV_VARIABLES = [
   'NMR_CLIENT_ID',
   'NMR_CLIENT_SECRET',
-  'NMR_USERNAME',
-  'NMR_PASSWORD',
 ];
 
 for (let key of REQUIRED_ENV_VARIABLES) {
@@ -26,8 +24,6 @@ for (let key of REQUIRED_ENV_VARIABLES) {
 
 const CLIENT_ID = process.env.NMR_CLIENT_ID;
 const CLIENT_SECRET = process.env.NMR_CLIENT_SECRET;
-const USERNAME = process.env.NMR_USERNAME;
-const PASSWORD = process.env.NMR_PASSWORD;
 
 const isBoilerOn = (home: Home): boolean => {
   const thermostat = findThermostat(home);
@@ -121,8 +117,6 @@ const main = async (clock: Clock) => {
   const credentials: OAuthCredentials = {
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
-    username: USERNAME,
-    password: PASSWORD,
   };
 
   let isActive: boolean = false;

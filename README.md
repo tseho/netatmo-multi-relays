@@ -14,7 +14,7 @@ Then, configure your environment variables with the Netatmo credentials.
 
 #### Run with docker:
 ```
-docker run --rm -t -e NMR_CLIENT_ID -e NMR_CLIENT_SECRET -e NMR_USERNAME -e NMR_PASSWORD tseho/netatmo-multi-relays
+docker run --rm -t -e NMR_CLIENT_ID -e NMR_CLIENT_SECRET -p 3000:3000 tseho/netatmo-multi-relays
 ```
 
 #### Run directly:
@@ -28,11 +28,9 @@ npm run start
 
 - NMR_CLIENT_ID: Netatmo App client ID
 - NMR_CLIENT_SECRET: Netatmo App client secret
-- NMR_USERNAME: Netatmo username
-- NMR_PASSWORD: Netatmo password
+- NMR_REDIRECT_URI: URL used during OAuth redirection (default: http://localhost:3000/callback)
 - NMR_UPDATE_INTERVAL: Interval between updates, in seconds. (default: 600)
 - NMR_DIFF_THRESHOLD: Temp difference tolerated before starting the boiler, in C°. (defaut: 0.5)
-
 
 ## Publish for docker
 

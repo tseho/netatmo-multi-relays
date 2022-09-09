@@ -12,7 +12,10 @@ node_modules/
 .idea/
 
 # Cache
-.cache
+.cache/
+
+# Storage
+data/
 
 # Build
 build/

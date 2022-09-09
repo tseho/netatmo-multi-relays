@@ -3,7 +3,13 @@ const path = require('path');
 module.exports = {
   mode: process.env.NODE_ENV || 'production',
   target: 'node',
-  entry: './src/index.ts',
+  externals: {
+    "express": "require('express')"
+  },
+  entry: {
+    daemon: './src/daemon.ts',
+    server: './src/server.ts',
+  },
   module: {
     rules: [{
       test: /\.ts$/,

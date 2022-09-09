@@ -1,4 +1,4 @@
-RELEASE = latest
+RELEASE ?= latest
 
 .PHONY: publish
 publish:

@@ -1,4 +1,6 @@
 .cache
 build/
+data/
 node_modules/
 credentials
+Dockerfile
