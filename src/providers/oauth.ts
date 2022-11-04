@@ -49,15 +49,11 @@ export const requestNewAccessTokens = async (credentials: OAuthCredentials, code
     code: code,
   });
 
+  tokens.expires_at = Date.now() + ((tokens.expires_in - 10) * 1000);
+
   storeAccessTokensInStorage(tokens);
 };
 
 export const getAccessTokens = async (credentials: OAuthCredentials): Promise<OAuthTokens> => {
-  const tokens = await loadAccessTokens(credentials);
-
-  if (!tokens.expires_at) {
-    tokens.expires_at = Date.now() + (tokens.expires_in * 1000);
-  }
-
-  return tokens;
+  return await loadAccessTokens(credentials);
 };
