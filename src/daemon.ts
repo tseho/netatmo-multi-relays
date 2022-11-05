@@ -135,9 +135,11 @@ const main = async (clock: Clock) => {
       let forcedProgramIsOn: boolean = isForcedProgramOn(home);
       let boilerIsOn: boolean = isBoilerOn(home);
 
-      logger.info('rooms status', {
-        home: home.name,
-        rooms: home.rooms.map(room => getRoomDescription(room, home)),
+      home.rooms.forEach((room) => {
+        logger.info('room status', {
+          home: home.name,
+          room: getRoomDescription(room, home),
+        });
       });
       logger.debug('check status', { home: home.name, needHeating, forcedProgramIsOn, boilerIsOn });
 
