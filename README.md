@@ -8,23 +8,29 @@ the main Thermostat to start the boiler.
 
 ## How to use
 
-Create an account and a Netatmo App on [https://dev.netatmo.com/](https://dev.netatmo.com/).
-
-Then, configure your environment variables with the Netatmo credentials.
-
-#### Run with docker:
-```
-docker run --rm -t -e NMR_CLIENT_ID -e NMR_CLIENT_SECRET -p 3000:3000 tseho/netatmo-multi-relays
-```
-
-#### Run directly:
-```
-npm install
-npm run build
-npm run start
-```
+1) Create an account and a Netatmo App on [https://dev.netatmo.com/](https://dev.netatmo.com/).
+2) Configure the environment variables with your Netatmo credentials.
+   ```
+   export NMR_CLIENT_ID=xxx
+   export NMR_CLIENT_SECRET=xxx
+   ```
+3) Launch the application
+   - with docker:
+   ```
+   docker run --rm -t -e NMR_CLIENT_ID -e NMR_CLIENT_SECRET -p 3000:3000 tseho/netatmo-multi-relays
+   ```
+   - with npm:
+   ```
+   npm install
+   npm run build
+   npm run start
+   ```
+4) Open http://localhost:3000 to authorize the application.
+5) Check the logs.
 
 #### Environment variables
+
+The following environment variables are used by the application, you can override their default values if needed.
 
 - NMR_CLIENT_ID: Netatmo App client ID
 - NMR_CLIENT_SECRET: Netatmo App client secret
@@ -32,7 +38,7 @@ npm run start
 - NMR_UPDATE_INTERVAL: Interval between updates, in seconds. (default: 600)
 - NMR_DIFF_THRESHOLD: Temp difference tolerated before starting the boiler, in C°. (defaut: 0.5)
 
-## Publish for docker
+## Publish on dockerhub
 
 ```
 make publish
